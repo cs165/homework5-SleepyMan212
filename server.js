@@ -34,14 +34,20 @@ app.get('/api', onGet);
 
 async function onPost(req, res) {
     const messageBody = req.body;
+    const result = await sheet.getRows();
+    const rows = result.rows;
     console.log(messageBody);
     // TODO(you): Implement onPost.
     tmp = [];
     for (let v in messageBody) {
         console.log(v);
         if (messageBody.hasOwnProperty(v)) {
-            tmp.push(messageBody[v]);
+            messageBody[v.toLowerCase()] = messageBody[v];
         }
+    }
+    let i;
+    for(let i = 0; i<rows[0].length; i++){
+        tmp.push(messageBody[rows[0][i].toLowerCase()]);
     }
     console.log(tmp);
     sheet.appendRow(tmp)
@@ -69,7 +75,7 @@ async function onPatch(req, res) {
     let i, j, k;
     for (i = 0; i < rows[0].length; i++) {
         console.log(rows[0][i]);
-        if (rows[0][i] == column) {
+        if (rows[0][i].toLowerCase() == column.toLowerCase()) {
             break;
         }
     }
@@ -78,7 +84,7 @@ async function onPatch(req, res) {
     }
     const key = Object.keys(messageBody);
     for (k = 0; k < rows[0].length; k++) {
-        if (rows[0][k] == key[0]) break;
+        if (rows[0][k].toLowerCase() == key[0].toLowerCase()) break;
     }
 
     rows[j][k] = messageBody[key[0]];
@@ -108,7 +114,7 @@ async function onDelete(req, res) {
     let i, j;
     for (i = 0; i < rows[0].length; i++) {
         console.log(rows[0][i]);
-        if (rows[0][i] == column) {
+        if (rows[0][i].toLowerCase() == column.toLowerCase()) {
             console.log('find the column');
             break;
         }
